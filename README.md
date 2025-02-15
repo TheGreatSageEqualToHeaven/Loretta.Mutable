@@ -91,7 +91,10 @@ public class RewriteStatementList : MutableSyntaxRewriter
   
 MutableFactory serves as a way to convert immutable nodes to mutable nodes and vice versa. You are able to create mutable nodes directly by calling `new` unlike their immutable counterparts.  
   
-`MutableFactory.ImmutableCompilationUnit(CompilationUnit)`/`MutableFactory.MutableCompilationUnit(CompilationUnitSyntax)`  
-`MutableFactory.ImmutableFunctionDeclarationStatement(FunctionDeclarationStatement)`/`MutableFactory.MutableFunctionDeclarationStatement(FunctionDeclarationStatementSyntax)`  
-  
+`MutableFactory.ImmutableCompilationUnit(CompilationUnit)` to create an immutable `CompilationUnitSyntax`  
+`MutableFactory.MutableCompilationUnit(CompilationUnitSyntax)` to create a mutable `CompilationUnit`  
+   
+`MutableFactory.ImmutableFunctionDeclarationStatement(FunctionDeclarationStatement)` to create an immutable `FunctionDeclarationStatementSyntax`  
+`MutableFactory.MutableFunctionDeclarationStatement(FunctionDeclarationStatementSyntax)` to create a mutable `FunctionDeclarationStatement`  
+   
 Including `MutableFactory` also includes the `ToMutable` method for immutable nodes and `ToImmutable` for mutable nodes.  
