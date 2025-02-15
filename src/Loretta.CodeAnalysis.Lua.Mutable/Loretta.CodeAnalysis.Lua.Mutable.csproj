@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Loretta.CodeAnalysis.Lua.Mutable</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Loretta.CodeAnalysis.Lua.Mutable.SourceGenerator\Loretta.CodeAnalysis.Lua.Mutable.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Loretta.CodeAnalysis.Lua" Version="0.2.13-nightly.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Syntax.xml" />
+    </ItemGroup>
+    
+</Project>

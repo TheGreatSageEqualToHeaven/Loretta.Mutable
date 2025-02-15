@@ -1,0 +1,742 @@
+﻿<Tree Root="Node">
+    <!-- Bindings -->
+
+    <Node Name="IdentifierName" Base="MutableExpression">
+        <Kind Name="IdentifierName"/>
+        <Fields>
+            <Field Name="Name" Type="string"/>
+        </Fields>
+        <SourceNode Name="IdentifierNameSyntax">
+            <Factories>
+                <Factory Original="Name" New="Name"/>
+            </Factories>
+            <SourceFactories FactoryName="IdentifierName">
+                <Factory Field="Name"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>    
+    <Node Name="WrappedIdentifierName" Base="MutableExpression">
+        <Kind Name="WrappedIdentifierName"/>
+        <Fields>
+            <Field Name="Name" Type="string"/>
+        </Fields>
+        <SourceNode Name="TypedIdentifierNameSyntax">
+            <Factories>
+                <Factory Original="Name" New="Name"/>
+            </Factories>
+            <SourceFactories FactoryName="TypedIdentifierName">
+                <Factory Field="Name"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>    
+    <Node Name="LocalDeclarationName" Base="MutableExpression">
+        <Kind Name="LocalDeclarationName"/>
+        <Fields>
+            <Field Name="Name" Type="string"/>
+        </Fields>
+        <SourceNode Name="LocalDeclarationNameSyntax">
+            <Factories>
+                <Factory Original="Name" New="Name"/>
+            </Factories>
+            <SourceFactories FactoryName="LocalDeclarationName">
+                <Factory Field="Name"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="StatementList" Base="MutableSyntaxNode">
+        <Kind Name="StatementList" />
+        <Fields>
+            <Field Name="Statements" Type="List&lt;MutableStatement&gt;" Init="List"/>
+        </Fields>
+        <SourceNode Name="StatementListSyntax">
+            <Factories>
+                <Factory Original="Statements" New="Statements" Alt="List"/>
+            </Factories>
+            <SourceFactories FactoryName="StatementList">
+                <Factory Field="Statements" Alt="List" Type="StatementSyntax"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="CompilationUnit" Base="MutableSyntaxNode">
+        <Kind Name="CompilationUnit" />
+        <Fields>
+            <Field Name="Statements" Type="List&lt;MutableStatement&gt;" Init="List"/>
+        </Fields>
+        <SourceNode Name="CompilationUnitSyntax">
+            <Factories>
+                <Factory Original="Statements.Statements" New="Statements" Alt="List"/>
+            </Factories>
+            <SourceFactories FactoryName="CompilationUnit">
+                <Factory Field="RemoveDot" Alt="StatementList"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+
+    <!-- Expressions -->
+    <Node Name="LiteralExpression" Base="MutableExpression">
+        <Kind Name="LiteralExpression"/>
+        <Fields>
+            <Field Name="LiteralData" Type="object?"/>
+            <Field Name="SourceSyntaxKind" Type="SyntaxKind"/>
+        </Fields>
+        <SourceNode Name="LiteralExpressionSyntax">
+            <Factories>
+                <Factory Original="Token.Value" New="LiteralData"/>
+                <Factory Original="Kind()" New="SourceSyntaxKind"/>
+            </Factories>
+            <SourceFactories FactoryName="LiteralExpression">
+                <Factory Field="SourceSyntaxKind"/>
+                <Factory Field="LiteralData" Alt="Literal"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="FunctionCallExpression" Base="MutableExpression">
+        <Kind Name="FunctionCallExpression"/>
+        <Fields>
+            <Field Name="Expression" Type="MutableExpression"/>
+            <Field Name="Argument" Type="MutableFunctionArgument"/>
+        </Fields>
+        <SourceNode Name="FunctionCallExpressionSyntax">
+            <Factories>
+                <Factory Original="Expression" New="Expression" Alt="Node"/>
+                <Factory Original="Argument" New="Argument" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="FunctionCallExpression">
+                <Factory Field="Expression" Alt="PrefixNode"/>
+                <Factory Field="Argument" Alt="Node"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="MethodCallExpression" Base="MutableExpression">
+        <Kind Name="MethodCallExpression"/>
+        <Fields>
+            <Field Name="Expression" Type="MutableExpression"/>
+            <Field Name="Method" Type="string"/>
+            <Field Name="Argument" Type="MutableFunctionArgument"/>
+        </Fields>
+        <SourceNode Name="MethodCallExpressionSyntax">
+            <Factories>
+                <Factory Original="Expression" New="Expression" Alt="Node"/>
+                <Factory Original="Identifier.Text" New="Method"/>
+                <Factory Original="Argument" New="Argument" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="MethodCallExpression">
+                <Factory Field="Expression" Alt="PrefixNode"/>
+                <Factory Field="Method"/>
+                <Factory Field="Argument" Alt="Node"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>    
+    <Node Name="MemberAccessExpression" Base="MutableExpression">
+        <Kind Name="MemberAccessExpression"/>
+        <Fields>
+            <Field Name="Expression" Type="MutableExpression"/>
+            <Field Name="MemberName" Type="string"/>
+        </Fields>
+        <SourceNode Name="MemberAccessExpressionSyntax">
+            <Factories>
+                <Factory Original="Expression" New="Expression" Alt="Node"/>
+                <Factory Original="MemberName.Text" New="MemberName"/>
+            </Factories>
+            <SourceFactories FactoryName="MemberAccessExpression">
+                <Factory Field="Expression" Alt="PrefixNode"/>
+                <Factory Field="MemberName"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="ElementAccessExpression" Base="MutableExpression">
+        <Kind Name="ElementAccessExpression"/>
+        <Fields>
+            <Field Name="Expression" Type="MutableExpression"/>
+            <Field Name="KeyExpression" Type="MutableExpression"/>
+        </Fields>
+        <SourceNode Name="ElementAccessExpressionSyntax">
+            <Factories>
+                <Factory Original="Expression" New="Expression" Alt="Node"/>
+                <Factory Original="KeyExpression" New="KeyExpression" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="ElementAccessExpression">
+                <Factory Field="Expression" Alt="PrefixNode"/>
+                <Factory Field="KeyExpression" Alt="Node"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>    
+    <Node Name="UnaryExpression" Base="MutableExpression">
+        <Kind Name="UnaryExpression"/>
+        <Fields>
+            <Field Name="Operand" Type="MutableExpression"/>
+            <Field Name="SourceSyntaxToken" Type="SyntaxToken"/>
+            <Field Name="SourceSyntaxKind" Type="SyntaxKind"/>
+        </Fields>
+        <SourceNode Name="UnaryExpressionSyntax">
+            <Factories>
+                <Factory Original="Operand" New="Operand" Alt="Node"/>
+                <Factory Original="OperatorToken" New="SourceSyntaxToken"/>
+                <Factory Original="Kind()" New="SourceSyntaxKind"/>
+            </Factories>
+            <SourceFactories FactoryName="UnaryExpression">
+                <Factory Field="SourceSyntaxKind"/>
+                <Factory Field="SourceSyntaxToken"/>
+                <Factory Field="Operand" Alt="Node"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="BinaryExpression" Base="MutableExpression">
+        <Kind Name="BinaryExpression"/>
+        <Fields>
+            <Field Name="Left" Type="MutableExpression"/>
+            <Field Name="Right" Type="MutableExpression"/>
+            <Field Name="SourceSyntaxToken" Type="SyntaxToken"/>
+            <Field Name="SourceSyntaxKind" Type="SyntaxKind"/>
+        </Fields>
+        <SourceNode Name="BinaryExpressionSyntax">
+            <Factories>
+                <Factory Original="Left" New="Left" Alt="Node"/>
+                <Factory Original="Right" New="Right" Alt="Node"/>
+                <Factory Original="OperatorToken" New="SourceSyntaxToken"/>
+                <Factory Original="Kind()" New="SourceSyntaxKind"/>
+            </Factories>
+            <SourceFactories FactoryName="BinaryExpression">
+                <Factory Field="SourceSyntaxKind"/>
+                <Factory Field="Left" Alt="Node"/>
+                <Factory Field="SourceSyntaxToken"/>
+                <Factory Field="Right" Alt="Node"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="TableConstructorExpression" Base="MutableExpression">
+        <Kind Name="TableConstructor"/>
+        <Fields>
+            <Field Name="Fields" Type="List&lt;MutableTableField&gt;" Init="List"/>
+        </Fields>
+        <SourceNode Name="TableConstructorExpressionSyntax">
+            <Factories>
+                <Factory Original="Fields" New="Fields" Alt="List"/>
+            </Factories>
+            <SourceFactories FactoryName="TableConstructorExpression">
+                <Factory Field="Fields" Alt="SeparatedList" Type="TableFieldSyntax"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="AnonymousFunctionExpression" Base="MutableExpression">
+        <Kind Name="AnonymousFunctionExpression"/>
+        <Fields>
+            <Field Name="Parameters" Type="List&lt;MutableParameter&gt;" Init="List"/>
+            <Field Name="Body" Type="StatementList"/>
+        </Fields>
+        <SourceNode Name="AnonymousFunctionExpressionSyntax">
+            <Factories>
+                <Factory Original="Parameters.Parameters" New="Parameters" Alt="List"/>
+                <Factory Original="Body" New="Body" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="AnonymousFunctionExpression">
+                <Factory Field="Parameters" Alt="ParameterList"/>
+                <Factory Field="Body" Alt="StatementList"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="ParenthesizedExpression" Base="MutableExpression">
+        <Kind Name="ParenthesizedExpression"/>
+        <Fields>
+            <Field Name="Expression" Type="MutableExpression"/>
+        </Fields>
+        <SourceNode Name="ParenthesizedExpressionSyntax">
+            <Factories>
+                <Factory Original="Expression" New="Expression" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="ParenthesizedExpression">
+                <Factory Field="Expression" Alt="Node"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>    
+    <Node Name="VarArgExpression" Base="MutableExpression">
+        <Kind Name="VarArgExpression"/>
+        <Fields>
+        </Fields>
+        <SourceNode Name="VarArgExpressionSyntax">
+            <Factories>
+            </Factories>
+            <SourceFactories FactoryName="VarArgExpression">
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+
+    <!-- Function Arguments -->
+    <Node Name="ExpressionListFunctionArgument" Base="MutableFunctionArgument">
+        <Kind Name="ExpressionListFunctionArgument"/>
+        <Fields>
+            <Field Name="Expressions" Type="List&lt;MutableExpression&gt;" Init="List"/>
+        </Fields>
+        <SourceNode Name="ExpressionListFunctionArgumentSyntax">
+            <Factories>
+                <Factory Original="Expressions" New="Expressions" Alt="List"/>
+            </Factories>
+            <SourceFactories FactoryName="ExpressionListFunctionArgument">
+                <Factory Field="Expressions" Alt="SeparatedList" Type="ExpressionSyntax"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="TableConstructorFunctionArgument" Base="MutableFunctionArgument">
+        <Kind Name="TableConstructorFunctionArgument"/>
+        <Fields>
+            <Field Name="TableConstructor" Type="TableConstructorExpression"/>
+        </Fields>
+        <SourceNode Name="TableConstructorFunctionArgumentSyntax">
+            <Factories>
+                <Factory Original="TableConstructor" New="TableConstructor" Alt="Node"/>
+            </Factories>
+        </SourceNode>
+    </Node>
+    <Node Name="StringFunctionArgument" Base="MutableFunctionArgument">
+        <Kind Name="StringFunctionArgument"/>
+        <Fields>
+            <Field Name="Literal" Type="LiteralExpression"/>
+        </Fields>
+        <SourceNode Name="StringFunctionArgumentSyntax">
+            <Factories>
+                <Factory Original="Expression" New="Literal" Alt="Node"/>
+            </Factories>
+        </SourceNode>
+    </Node>
+    
+    <!-- Table Fields -->
+    <Node Name="UnkeyedTableField" Base="MutableTableField">
+        <Kind Name="UnkeyedTableField"/>
+        <Fields>
+            <Field Name="Value" Type="MutableExpression"/>
+        </Fields>
+        <SourceNode Name="UnkeyedTableFieldSyntax">
+            <Factories>
+                <Factory Original="Value" New="Value" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="UnkeyedTableField">
+                <Factory Field="Value" Alt="Node"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="IdentifierKeyedTableField" Base="MutableTableField">
+        <Kind Name="IdentifierKeyedTableField"/>
+        <Fields>
+            <Field Name="Name" Type="string"/>
+            <Field Name="Value" Type="MutableExpression"/>
+        </Fields>
+        <SourceNode Name="IdentifierKeyedTableFieldSyntax">
+            <Factories>
+                <Factory Original="Identifier.ValueText" New="Name"/>
+                <Factory Original="Value" New="Value" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="IdentifierKeyedTableField">
+                <Factory Field="Name"/>
+                <Factory Field="Value" Alt="Node"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>    
+    <Node Name="ExpressionKeyedTableField" Base="MutableTableField">
+        <Kind Name="ExpressionKeyedTableField"/>
+        <Fields>
+            <Field Name="Key" Type="MutableExpression"/>
+            <Field Name="Value" Type="MutableExpression"/>
+        </Fields>
+        <SourceNode Name="ExpressionKeyedTableFieldSyntax">
+            <Factories>
+                <Factory Original="Key" New="Key" Alt="Node"/>
+                <Factory Original="Value" New="Value" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="ExpressionKeyedTableField">
+                <Factory Field="Key" Alt="Node"/>
+                <Factory Field="Value" Alt="Node"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    
+    <!-- Parameters -->
+    <Node Name="NamedParameter" Base="MutableParameter">
+        <Kind Name="NamedParameter"/>
+        <Fields>
+            <Field Name="Name" Type="string"/>
+        </Fields>
+        <SourceNode Name="NamedParameterSyntax">
+            <Factories>
+                <Factory Original="Name" New="Name"/>
+            </Factories>
+            <SourceFactories FactoryName="NamedParameter">
+                <Factory Field="Name"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>    
+    <Node Name="VarArgParameter" Base="MutableParameter">
+        <Kind Name="VarArgParameter"/>
+        <Fields>
+        </Fields>
+        <SourceNode Name="VarArgParameterSyntax">
+            <Factories>
+            </Factories>
+            <SourceFactories FactoryName="VarArgParameter">
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    
+    <!-- Statements -->
+    <Node Name="IfStatement" Base="MutableStatement">
+        <Kind Name="IfStatement"/>
+        <Fields>
+            <Field Name="Condition" Type="MutableExpression"/>
+            <Field Name="Body" Type="StatementList"/>
+            <Field Name="ElseIfClauses" Type="List&lt;ElseIfClause&gt;" Init="List"/>
+            <Field Name="ElseClause" Type="ElseClause?"/>
+        </Fields>
+        <SourceNode Name="IfStatementSyntax">
+            <Factories>
+                <Factory Original="Condition" New="Condition" Alt="Node"/>
+                <Factory Original="Body" New="Body" Alt="Node"/>
+                <Factory Original="ElseIfClauses" New="ElseIfClauses" Alt="List"/>
+                <Factory Original="ElseClause" New="ElseClause" Alt="NullableNode"/>
+            </Factories>
+            <SourceFactories FactoryName="IfStatement">
+                <Factory Field="Condition" Alt="Node"/>
+                <Factory Field="Body" Alt="StatementList"/>
+                <Factory Field="ElseIfClauses" Alt="List" Type="ElseIfClauseSyntax"/>
+                <Factory Field="ElseClause" Alt="NullableNode"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="ElseIfClause" Base="MutableSyntaxNode">
+        <Kind Name="ElseIfClause"/>
+        <Fields>
+            <Field Name="Condition" Type="MutableExpression"/>
+            <Field Name="Body" Type="StatementList"/>
+        </Fields>
+        <SourceNode Name="ElseIfClauseSyntax">
+            <Factories>
+                <Factory Original="Condition" New="Condition" Alt="Node"/>
+                <Factory Original="Body" New="Body" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="ElseIfClause">
+                <Factory Field="Condition" Alt="Node"/>
+                <Factory Field="Body" Alt="StatementList"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="ElseClause" Base="MutableSyntaxNode">
+        <Kind Name="ElseClause"/>
+        <Fields>
+            <Field Name="ElseBody" Type="StatementList"/>
+        </Fields>
+        <SourceNode Name="ElseClauseSyntax">
+            <Factories>
+                <Factory Original="ElseBody" New="ElseBody" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="ElseClause">
+                <Factory Field="ElseBody" Alt="Node"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="WhileStatement" Base="MutableStatement">
+        <Kind Name="WhileStatement"/>
+        <Fields>
+            <Field Name="Condition" Type="MutableExpression"/>
+            <Field Name="Body" Type="StatementList"/>
+        </Fields>
+        <SourceNode Name="WhileStatementSyntax">
+            <Factories>
+                <Factory Original="Condition" New="Condition" Alt="Node"/>
+                <Factory Original="Body" New="Body" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="WhileStatement">
+                <Factory Field="Condition" Alt="Node"/>
+                <Factory Field="Body" Alt="StatementList"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="RepeatUntilStatement" Base="MutableStatement">
+        <Kind Name="RepeatUntilStatement"/>
+        <Fields>
+            <Field Name="Body" Type="StatementList"/>
+            <Field Name="Condition" Type="MutableExpression"/>
+        </Fields>
+        <SourceNode Name="RepeatUntilStatementSyntax">
+            <Factories>
+                <Factory Original="Body" New="Body" Alt="Node"/>
+                <Factory Original="Condition" New="Condition" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="RepeatUntilStatement">
+                <Factory Field="Body" Alt="StatementList"/>
+                <Factory Field="Condition" Alt="Node"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="NumericForStatement" Base="MutableStatement">
+        <Kind Name="NumericForStatement"/>
+        <Fields>
+            <Field Name="LoopVariable" Type="string"/>
+            <Field Name="InitialValue" Type="MutableExpression"/>
+            <Field Name="FinalValue" Type="MutableExpression"/>
+            <Field Name="StepValue" Type="MutableExpression?"/>
+            <Field Name="Body" Type="StatementList"/>
+        </Fields>
+        <SourceNode Name="NumericForStatementSyntax">
+            <Factories>
+                <Factory Original="Identifier.Name" New="LoopVariable"/>
+                <Factory Original="InitialValue" New="InitialValue" Alt="Node"/>
+                <Factory Original="FinalValue" New="FinalValue" Alt="Node"/>
+                <Factory Original="StepValue" New="StepValue" Alt="NullableNode"/>
+                <Factory Original="Body" New="Body" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="NumericForStatement">
+                <Factory Field="LoopVariable"/>
+                <Factory Field="InitialValue" Alt="Node"/>
+                <Factory Field="FinalValue" Alt="Node"/>
+                <Factory Field="StepValue" Alt="NullableNode"/>
+                <Factory Field="Body" Alt="StatementList"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>    
+    <Node Name="GenericForStatement" Base="MutableStatement">
+        <Kind Name="GenericForStatement"/>
+        <Fields>
+            <Field Name="Variables" Type="List&lt;WrappedIdentifierName&gt;"/>
+            <Field Name="Expressions" Type="List&lt;MutableExpression&gt;"/>
+            <Field Name="Body" Type="StatementList"/>
+        </Fields>
+        <SourceNode Name="GenericForStatementSyntax">
+            <Factories>
+                <Factory Original="Identifiers" New="Variables" Alt="List"/>
+                <Factory Original="Expressions" New="Expressions" Alt="List"/>
+                <Factory Original="Body" New="Body" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="GenericForStatement">
+                <Factory Field="Variables" Alt="SeparatedList" Type="TypedIdentifierNameSyntax"/>
+                <Factory Field="Expressions" Alt="SeparatedList" Type="ExpressionSyntax"/>
+                <Factory Field="Body" Alt="StatementList"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="DoStatement" Base="MutableStatement">
+        <Kind Name="DoStatement"/>
+        <Fields>
+            <Field Name="Body" Type="StatementList"/>
+        </Fields>
+        <SourceNode Name="DoStatementSyntax">
+            <Factories>
+                <Factory Original="Body" New="Body" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="DoStatement">
+                <Factory Field="Body" Alt="StatementList"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>    
+    <Node Name="LocalVariableDeclarationStatement" Base="MutableStatement">
+        <Kind Name="LocalVariableDeclarationStatement"/>
+        <Fields>
+            <Field Name="Names" Type="List&lt;LocalDeclarationName&gt;" Init="List"/>
+            <Field Name="EqualsValues" Type="EqualsValuesClause?"/>
+        </Fields>
+        <SourceNode Name="LocalVariableDeclarationStatementSyntax">
+            <Factories>
+                <Factory Original="Names" New="Names" Alt="List"/>
+                <Factory Original="EqualsValues" New="EqualsValues" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="LocalVariableDeclarationStatement">
+                <Factory Field="Names" Alt="SeparatedList" Type="LocalDeclarationNameSyntax"/>
+                <Factory Field="EqualsValues" Alt="Node"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>        
+    <Node Name="AssignmentStatement" Base="MutableStatement">
+        <Kind Name="AssignmentStatement"/>
+        <Fields>
+            <Field Name="Variables" Type="List&lt;MutableExpression&gt;" Init="List"/>
+            <Field Name="EqualsValues" Type="EqualsValuesClause"/>
+        </Fields>
+        <SourceNode Name="AssignmentStatementSyntax">
+            <Factories>
+                <Factory Original="Variables" New="Variables" Alt="List"/>
+                <Factory Original="EqualsValues" New="EqualsValues" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="AssignmentStatement">
+                <Factory Field="Variables" Alt="SeparatedList" Type="PrefixExpressionSyntax"/>
+                <Factory Field="EqualsValues" Alt="Node"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>    
+    <Node Name="EqualsValuesClause" Base="MutableSyntaxNode">
+        <Kind Name="EqualsValuesClause"/>
+        <Fields>
+            <Field Name="Values" Type="List&lt;MutableExpression&gt;" Init="List"/>
+        </Fields>
+        <SourceNode Name="EqualsValuesClauseSyntax">
+            <Factories>
+                <Factory Original="Values" New="Values" Alt="List"/>
+            </Factories>
+            <SourceFactories FactoryName="EqualsValuesClause">
+                <Factory Field="Values" Alt="SeparatedList" Type="ExpressionSyntax"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="ExpressionStatement" Base="MutableStatement">
+        <Kind Name="ExpressionStatement"/>
+        <Fields>
+            <Field Name="Expression" Type="MutableExpression"/>
+        </Fields>
+        <SourceNode Name="ExpressionStatementSyntax">
+            <Factories>
+                <Factory Original="Expression" New="Expression" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="ExpressionStatement">
+                <Factory Field="Expression" Alt="Node"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>    
+    <Node Name="GotoStatement" Base="MutableStatement">
+        <Kind Name="GotoStatement"/>
+        <Fields>
+            <Field Name="LabelName" Type="string"/>
+        </Fields>
+        <SourceNode Name="GotoStatementSyntax">
+            <Factories>
+                <Factory Original="LabelName.ValueText" New="LabelName"/>
+            </Factories>
+            <SourceFactories FactoryName="GotoStatement">
+                <Factory Field="LabelName"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>   
+     <Node Name="GotoLabelStatement" Base="MutableStatement">
+        <Kind Name="GotoLabelStatement"/>
+        <Fields>
+            <Field Name="LabelName" Type="string"/>
+        </Fields>
+        <SourceNode Name="GotoLabelStatementSyntax">
+            <Factories>
+                <Factory Original="Identifier.ValueText" New="LabelName"/>
+            </Factories>
+            <SourceFactories FactoryName="GotoLabelStatement">
+                <Factory Field="LabelName"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>     
+    <Node Name="BreakStatement" Base="MutableStatement">
+        <Kind Name="BreakStatement"/>
+        <Fields>
+        </Fields>
+        <SourceNode Name="BreakStatementSyntax">
+            <Factories>
+            </Factories>
+            <SourceFactories FactoryName="BreakStatement">
+            </SourceFactories>
+        </SourceNode>
+    </Node>    
+    <Node Name="ContinueStatement" Base="MutableStatement">
+        <Kind Name="ContinueStatement"/>
+        <Fields>
+        </Fields>
+        <SourceNode Name="ContinueStatementSyntax">
+            <Factories>
+            </Factories>
+            <SourceFactories FactoryName="ContinueStatement">
+            </SourceFactories>
+        </SourceNode>
+    </Node>    
+    <Node Name="ReturnStatement" Base="MutableStatement">
+        <Kind Name="ReturnStatement"/>
+        <Fields>
+            <Field Name="Expressions" Type="List&lt;MutableExpression&gt;" Init="List"/>
+        </Fields>
+        <SourceNode Name="ReturnStatementSyntax">
+            <Factories>
+                <Factory Original="Expressions" New="Expressions" Alt="List"/>
+            </Factories>
+            <SourceFactories FactoryName="ReturnStatement">
+                <Factory Field="Expressions" Alt="SeparatedList" Type="ExpressionSyntax"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="FunctionDeclarationStatement" Base="MutableStatement">
+        <Kind Name="FunctionDeclarationStatement"/>
+        <Fields>
+            <Field Name="Name" Type="MutableFunctionName"/>
+            <Field Name="Parameters" Type="List&lt;MutableParameter&gt;" Init="List"/>
+            <Field Name="Body" Type="StatementList"/>
+        </Fields>
+        <SourceNode Name="FunctionDeclarationStatementSyntax">
+            <Factories>
+                <Factory Original="Name" New="Name" Alt="Node"/>
+                <Factory Original="Parameters.Parameters" New="Parameters" Alt="List"/>
+                <Factory Original="Body" New="Body" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="FunctionDeclarationStatement">
+                <Factory Field="Name" Alt="Node"/>
+                <Factory Field="Parameters" Alt="ParameterList"/>
+                <Factory Field="Body" Alt="StatementList"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="SimpleFunctionName" Base="MutableFunctionName">
+        <Kind Name="SimpleFunctionName"/>
+        <Fields>
+            <Field Name="Name" Type="string"/>
+        </Fields>
+        <SourceNode Name="SimpleFunctionNameSyntax">
+            <Factories>
+                <Factory Original="Name.ValueText" New="Name"/>
+            </Factories>
+            <SourceFactories FactoryName="SimpleFunctionName">
+                <Factory Field="Name" Alt="Identifier"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>    
+    <Node Name="MemberFunctionName" Base="MutableFunctionName">
+        <Kind Name="MemberFunctionName"/>
+        <Fields>
+            <Field Name="BaseName" Type="string"/>
+            <Field Name="Name" Type="string"/>
+        </Fields>
+        <SourceNode Name="MemberFunctionNameSyntax">
+            <Factories>
+                <Factory Original="BaseName.Name.ValueText" New="BaseName"/>
+                <Factory Original="Name.ValueText" New="Name"/>
+            </Factories>
+            <SourceFactories FactoryName="MemberFunctionName">
+                <Factory Field="BaseName" Alt="SimpleFunctionName"/>
+                <Factory Field="Name"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>    
+    <Node Name="MethodFunctionName" Base="MutableFunctionName">
+        <Kind Name="MethodFunctionName"/>
+        <Fields>
+            <Field Name="BaseName" Type="string"/>
+            <Field Name="Name" Type="string"/>
+        </Fields>
+        <SourceNode Name="MethodFunctionNameSyntax">
+            <Factories>
+                <Factory Original="BaseName.Name.ValueText" New="BaseName"/>
+                <Factory Original="Name.ValueText" New="Name"/>
+            </Factories>
+            <SourceFactories FactoryName="MethodFunctionName">
+                <Factory Field="BaseName" Alt="SimpleFunctionName"/>
+                <Factory Field="Name"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+    <Node Name="LocalFunctionDeclarationStatement" Base="MutableStatement">
+        <Kind Name="LocalFunctionDeclarationStatement"/>
+        <Fields>
+            <Field Name="Name" Type="IdentifierName"/>
+            <Field Name="Parameters" Type="List&lt;MutableParameter&gt;" Init="List"/>
+            <Field Name="Body" Type="StatementList"/>
+        </Fields>
+        <SourceNode Name="LocalFunctionDeclarationStatementSyntax">
+            <Factories>
+                <Factory Original="Name" New="Name" Alt="Node"/>
+                <Factory Original="Parameters.Parameters" New="Parameters" Alt="List"/>
+                <Factory Original="Body" New="Body" Alt="Node"/>
+            </Factories>
+            <SourceFactories FactoryName="LocalFunctionDeclarationStatement">
+                <Factory Field="Name" Alt="Node"/>
+                <Factory Field="Parameters" Alt="ParameterList"/>
+                <Factory Field="Body" Alt="StatementList"/>
+            </SourceFactories>
+        </SourceNode>
+    </Node>
+</Tree>
